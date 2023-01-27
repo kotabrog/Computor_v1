@@ -1,4 +1,4 @@
-use crate::elem::Elem;
+use crate::term::Elem;
 
 
 fn str_to_float(num_str: &String) -> Result<f64, String> {
