@@ -73,23 +73,14 @@ pub fn parse_string(equation: &String) -> Result<Vec<Elem>, String> {
             },
             _ => {
                 if num_str.len() > 0 {
-                    match update_vec_str_to_num(&mut is_float, &mut num_str, &mut vec) {
-                        Err(s) => return Err(s),
-                        _ => {}
-                    }
+                    update_vec_str_to_num(&mut is_float, &mut num_str, &mut vec)?;
                 }
-                match update_vec_char_to_elem_except_num(c, &mut vec) {
-                    Err(s) => return Err(s),
-                    _ => {}
-                }
+                update_vec_char_to_elem_except_num(c, &mut vec)?;
             }
         }
     }
     if num_str.len() > 0 {
-        match update_vec_str_to_num(&mut is_float, &mut num_str, &mut vec) {
-            Err(s) => return Err(s),
-            _ => {}
-        }
+        update_vec_str_to_num(&mut is_float, &mut num_str, &mut vec)?;
     }
     return Ok(vec);
 }

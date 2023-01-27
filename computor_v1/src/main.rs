@@ -25,6 +25,8 @@ fn main() {
         }
     };
 
+    println!("{:?}", parsed_equation);
+
     let terms = elem_to_term(parsed_equation);
     println!("{:?}", terms)
 }

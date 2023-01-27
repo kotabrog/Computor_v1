@@ -20,6 +20,6 @@ pub enum Coefficient {
 
 #[derive(Debug)]
 pub struct Term {
-    coefficient: Coefficient,
-    degree: i64,
+    pub coefficient: Coefficient,
+    pub degree: i64,
 }
