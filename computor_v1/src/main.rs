@@ -4,10 +4,12 @@ mod term;
 mod parse_string;
 mod elem_to_term;
 mod reduce_equation;
+mod utility;
 
 use parse_string::parse_string;
 use elem_to_term::elem_to_term;
 use reduce_equation::reduce_equation;
+use utility::{hash_terms_to_sorted_vec, make_reduced_form_string};
 
 
 fn main() {
@@ -27,7 +29,7 @@ fn main() {
         }
     };
 
-    println!("{:?}", parsed_equation);
+    // println!("{:?}", parsed_equation);
 
     let equation_terms = match elem_to_term(parsed_equation) {
         Ok(v) => v,
@@ -37,9 +39,15 @@ fn main() {
         }
     };
 
-    println!("{:?}", equation_terms);
+    // println!("{:?}", equation_terms);
 
     let terms = reduce_equation(&equation_terms.0, &equation_terms.1);
 
-    println!("{:?}", terms);
+    // println!("{:?}", terms);
+
+    let terms = hash_terms_to_sorted_vec(terms);
+
+    // println!("{:?}", terms);
+
+    println!("Reduced form: {}", make_reduced_form_string(&terms));
 }

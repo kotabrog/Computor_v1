@@ -59,6 +59,17 @@ impl Coefficient {
             },
         }
     }
+
+    // pub fn is_plus(&self) -> bool {
+    //     match self {
+    //         Coefficient::NumInt(n) => {
+    //             *n >= 0
+    //         },
+    //         Coefficient::NumFloat(n) => {
+    //             *n >= 0.0
+    //         },
+    //     }
+    // }
 }
 
 
@@ -118,4 +129,28 @@ mod tests {
         let value = Coefficient::NumFloat(1_f64);
         assert_eq!(value.mul_minus(), Coefficient::NumFloat(-1_f64));
     }
+
+    // #[test]
+    // fn is_plus_int_plus() {
+    //     let value = Coefficient::NumInt(1);
+    //     assert_eq!(value.is_plus(), true);
+    // }
+
+    // #[test]
+    // fn is_plus_int_minus() {
+    //     let value = Coefficient::NumInt(-1);
+    //     assert_eq!(value.is_plus(), false);
+    // }
+
+    // #[test]
+    // fn is_plus_float_plus() {
+    //     let value = Coefficient::NumFloat(1.0);
+    //     assert_eq!(value.is_plus(), true);
+    // }
+
+    // #[test]
+    // fn is_plus_float_minus() {
+    //     let value = Coefficient::NumFloat(-1.0);
+    //     assert_eq!(value.is_plus(), false);
+    // }
 }
