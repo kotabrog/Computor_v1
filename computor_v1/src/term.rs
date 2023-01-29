@@ -26,22 +26,22 @@ pub struct Term {
 
 
 impl Coefficient {
-    pub fn checked_add(&self, other: &Coefficient) -> Result<Coefficient, String> {
+    pub fn add(&self, other: &Coefficient) -> Coefficient {
         match (self, other) {
             (Coefficient::NumInt(n1), Coefficient::NumInt(n2)) => {
                 match n1.checked_add(*n2) {
-                    Some(n) => Ok(Coefficient::NumInt(n)),
-                    None => Err(format!("Overflow value {} + {}", n1, n2)),
+                    Some(n) => Coefficient::NumInt(n),
+                    None => Coefficient::NumFloat(*n1 as f64 + *n2 as f64),
                 }
             },
             (Coefficient::NumInt(n1), Coefficient::NumFloat(n2)) => {
-                Ok(Coefficient::NumFloat(*n1 as f64 + n2))
+                Coefficient::NumFloat(*n1 as f64 + n2)
             },
             (Coefficient::NumFloat(n1), Coefficient::NumInt(n2)) => {
-                Ok(Coefficient::NumFloat(n1 + *n2 as f64))
+                Coefficient::NumFloat(n1 + *n2 as f64)
             },
             (Coefficient::NumFloat(n1), Coefficient::NumFloat(n2)) => {
-                Ok(Coefficient::NumFloat(n1 + n2))
+                Coefficient::NumFloat(n1 + n2)
             }
         }
     }
@@ -67,38 +67,38 @@ mod tests {
     use super::*;
 
     #[test]
-    fn coefficient_checked_add_int_int() {
+    fn coefficient_add_int_int() {
         let lhs = Coefficient::NumInt(1);
         let rhs = Coefficient::NumInt(2);
-        assert_eq!(lhs.checked_add(&rhs), Ok(Coefficient::NumInt(3)));
+        assert_eq!(lhs.add(&rhs), Coefficient::NumInt(3));
     }
     
     #[test]
-    fn coefficient_checked_add_float_int() {
+    fn coefficient_add_float_int() {
         let lhs = Coefficient::NumFloat(1.0);
         let rhs = Coefficient::NumInt(2);
-        assert_eq!(lhs.checked_add(&rhs), Ok(Coefficient::NumFloat(3.0)));
+        assert_eq!(lhs.add(&rhs), Coefficient::NumFloat(3.0));
     }
 
     #[test]
-    fn coefficient_checked_add_int_float() {
+    fn coefficient_add_int_float() {
         let lhs = Coefficient::NumInt(2);
         let rhs = Coefficient::NumFloat(1.0);
-        assert_eq!(lhs.checked_add(&rhs), Ok(Coefficient::NumFloat(3.0)));
+        assert_eq!(lhs.add(&rhs), Coefficient::NumFloat(3.0));
     }
 
     #[test]
-    fn coefficient_checked_add_float_float() {
+    fn coefficient_add_float_float() {
         let lhs = Coefficient::NumFloat(2.0);
         let rhs = Coefficient::NumFloat(1.0);
-        assert_eq!(lhs.checked_add(&rhs), Ok(Coefficient::NumFloat(3.0)));
+        assert_eq!(lhs.add(&rhs), Coefficient::NumFloat(3.0));
     }
 
     #[test]
-    fn coefficient_checked_add_error_int_int_overflow() {
+    fn coefficient_add_error_int_int_overflow() {
         let lhs = Coefficient::NumInt(9223372036854775807);
         let rhs = Coefficient::NumInt(1);
-        assert_eq!(lhs.checked_add(&rhs), Err(format!("Overflow value {} + {}", 9223372036854775807_i64, 1)));
+        assert_eq!(lhs.add(&rhs), Coefficient::NumFloat(9223372036854775808_f64));
     }
 
     #[test]

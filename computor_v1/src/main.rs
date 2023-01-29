@@ -29,7 +29,7 @@ fn main() {
 
     println!("{:?}", parsed_equation);
 
-    let mut equation_terms = match elem_to_term(parsed_equation) {
+    let equation_terms = match elem_to_term(parsed_equation) {
         Ok(v) => v,
         Err(s) => {
             eprintln!("{}", s);

@@ -1,6 +1,6 @@
-use std::{collections::HashMap, hash::Hash};
+use std::collections::HashMap;
 
-use crate::term::{Term, Coefficient, self};
+use crate::term::{Term, Coefficient};
 
 
 // fn check_degree_one_terms(terms: &Vec<Term>) -> (i64, i64) {
@@ -21,35 +21,23 @@ use crate::term::{Term, Coefficient, self};
 // }
 
 
-fn update_terms_coefficient(terms: &mut HashMap<i64, Term>, term: &Term, is_right: bool) -> Result<(), String> {
+fn update_terms_coefficient(terms: &mut HashMap<i64, Term>, term: &Term, is_right: bool) {
     let value = terms.entry(term.degree)
         .or_insert(Term { coefficient: Coefficient::NumInt(0), degree: term.degree});
     let add_value = if is_right {term.coefficient.mul_minus()} else {term.coefficient.clone()};
-    value.coefficient = value.coefficient.checked_add(&add_value)?;
-    Ok(())
+    value.coefficient = value.coefficient.add(&add_value);
 }
 
 
-pub fn reduce_equation(left_terms: &Vec<Term>, right_terms: &Vec<Term>) -> Result<HashMap<i64, Term>, String> {
+pub fn reduce_equation(left_terms: &Vec<Term>, right_terms: &Vec<Term>) -> HashMap<i64, Term> {
     let mut terms = HashMap::new();
     for term in left_terms {
-        update_terms_coefficient(&mut terms, &term, false)?;
+        update_terms_coefficient(&mut terms, &term, false);
     }
     for term in right_terms {
-        update_terms_coefficient(&mut terms, &term, true)?;
+        update_terms_coefficient(&mut terms, &term, true);
     }
-    Ok(terms)
-
-    // let (min_degree, max_degree) = check_degree(&left_terms, &right_terms);
-
-    // for i in min_degree..=max_degree {
-    //     terms.push(Term {coefficient: Coefficient::NumInt(0), degree: i})
-    // }
-
-    // for term in left_terms {
-    //     let index = term.degree - min_degree;
-    //     // terms[index as usize];
-    // }
+    terms
 }
 
 #[cfg(test)]
@@ -60,7 +48,87 @@ mod tests {
     fn reduce_equation_empty(){
         let left_vec = Vec::new();
         let right_vec = Vec::new();
-        assert_eq!(reduce_equation(&left_vec, &right_vec), Ok(HashMap::new()));
+        assert_eq!(reduce_equation(&left_vec, &right_vec), HashMap::new());
+    }
+
+    #[test]
+    fn reduce_equation_only_left(){
+        let left_vec = vec![Term {
+                coefficient: Coefficient::NumInt(2),
+                degree: 1,
+            },
+            Term {
+                coefficient: Coefficient::NumFloat(-1.2),
+                degree: 0,
+            }];
+        let right_vec = Vec::new();
+        let mut hash_map = HashMap::new();
+        hash_map.insert(0, Term {
+            coefficient: Coefficient::NumFloat(-1.2),
+            degree: 0,
+        });
+        hash_map.insert(1, Term {
+            coefficient: Coefficient::NumInt(2),
+            degree: 1,
+        });
+        assert_eq!(reduce_equation(&left_vec, &right_vec), hash_map);
+    }
+
+    #[test]
+    fn reduce_equation_only_right(){
+        let left_vec = Vec::new();
+        let right_vec = vec![Term {
+                coefficient: Coefficient::NumInt(2),
+                degree: 1,
+            },
+            Term {
+                coefficient: Coefficient::NumFloat(-1.2),
+                degree: 0,
+        }];
+        let mut hash_map = HashMap::new();
+        hash_map.insert(0, Term {
+            coefficient: Coefficient::NumFloat(1.2),
+            degree: 0,
+        });
+        hash_map.insert(1, Term {
+            coefficient: Coefficient::NumInt(-2),
+            degree: 1,
+        });
+        assert_eq!(reduce_equation(&left_vec, &right_vec), hash_map);
+    }
+
+    #[test]
+    fn reduce_equation_left_and_right(){
+        let left_vec = vec![Term {
+                coefficient: Coefficient::NumFloat(3.6),
+                degree: 1,
+            },
+            Term {
+                coefficient: Coefficient::NumFloat(-1.2),
+                degree: 3,
+        }];
+        let right_vec = vec![Term {
+                coefficient: Coefficient::NumInt(2),
+                degree: 1,
+            },
+            Term {
+                coefficient: Coefficient::NumFloat(-1.2),
+                degree: 0,
+        }];
+        let mut hash_map = HashMap::new();
+        hash_map.insert(0, Term {
+            coefficient: Coefficient::NumFloat(1.2),
+            degree: 0,
+        });
+        hash_map.insert(1, Term {
+            coefficient: Coefficient::NumFloat(1.6),
+            degree: 1,
+        });
+        hash_map.insert(3, Term {
+            coefficient: Coefficient::NumFloat(-1.2),
+            degree: 3,
+        });
+        assert_eq!(reduce_equation(&left_vec, &right_vec), hash_map);
     }
 
     // #[test]
