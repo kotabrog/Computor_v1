@@ -40,11 +40,11 @@ fn check_and_push_term(elems: &Vec<Elem>, terms: &mut Vec<Term>) -> Result<(), S
                     if term_step >= TermStep::Value {
                         return Err("Incorrect syntax".to_string())
                     }
-                    let value = match n.checked_mul(if is_plus {1} else {-1}) {
-                        Some(temp) => temp,
-                        None => return Err(format!("Overflow value {} * {}", -1, *n)),
-                    };
-                    coefficient = Coefficient::NumInt(value);
+                    if is_plus {
+                        coefficient = Coefficient::NumInt(*n);
+                    } else {
+                        coefficient = Coefficient::NumInt(*n).mul_minus();
+                    }
                     term_step = TermStep::Value;
                 }
             },
