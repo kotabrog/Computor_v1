@@ -3,9 +3,11 @@ use std::env;
 mod term;
 mod parse_string;
 mod elem_to_term;
+mod reduce_equation;
 
 use parse_string::parse_string;
 use elem_to_term::elem_to_term;
+use reduce_equation::reduce_equation;
 
 
 fn main() {
@@ -27,6 +29,17 @@ fn main() {
 
     println!("{:?}", parsed_equation);
 
-    let terms = elem_to_term(parsed_equation);
-    println!("{:?}", terms)
+    let mut equation_terms = match elem_to_term(parsed_equation) {
+        Ok(v) => v,
+        Err(s) => {
+            eprintln!("{}", s);
+            return;
+        }
+    };
+
+    println!("{:?}", equation_terms);
+
+    let terms = reduce_equation(&equation_terms.0, &equation_terms.1);
+
+    println!("{:?}", terms);
 }
