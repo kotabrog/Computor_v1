@@ -60,6 +60,17 @@ impl Coefficient {
         }
     }
 
+    pub fn is_zero(&self) -> bool {
+        match self {
+            Coefficient::NumInt(n) => {
+                *n == 0
+            },
+            Coefficient::NumFloat(n) => {
+                *n == 0.0
+            },
+        }
+    }
+
     // pub fn is_plus(&self) -> bool {
     //     match self {
     //         Coefficient::NumInt(n) => {
@@ -128,6 +139,30 @@ mod tests {
     fn coefficient_mul_minus_float_to_float() {
         let value = Coefficient::NumFloat(1_f64);
         assert_eq!(value.mul_minus(), Coefficient::NumFloat(-1_f64));
+    }
+
+    #[test]
+    fn is_zero_int_zero() {
+        let value = Coefficient::NumInt(0);
+        assert_eq!(value.is_zero(), true);
+    }
+
+    #[test]
+    fn is_zero_int_one() {
+        let value = Coefficient::NumInt(1);
+        assert_eq!(value.is_zero(), false);
+    }
+
+    #[test]
+    fn is_zero_float_zerp() {
+        let value = Coefficient::NumFloat(0.0);
+        assert_eq!(value.is_zero(), true);
+    }
+
+    #[test]
+    fn is_zero_float_one() {
+        let value = Coefficient::NumFloat(1.0);
+        assert_eq!(value.is_zero(), false);
     }
 
     // #[test]

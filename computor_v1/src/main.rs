@@ -9,7 +9,11 @@ mod utility;
 use parse_string::parse_string;
 use elem_to_term::elem_to_term;
 use reduce_equation::reduce_equation;
-use utility::{hash_terms_to_sorted_vec, make_reduced_form_string};
+use utility::{
+    hash_terms_to_sorted_vec,
+    make_reduced_form_string,
+    evaluate_degree_of_terms,
+};
 
 
 fn main() {
@@ -50,4 +54,13 @@ fn main() {
     // println!("{:?}", terms);
 
     println!("Reduced form: {}", make_reduced_form_string(&terms));
+
+    let degree = evaluate_degree_of_terms(&terms);
+
+    println!("Polynomial degree: {}", degree);
+
+    if degree >= 3 {
+        println!("The polynomial degree is strictly greater than 2, I can't solve.");
+        return;
+    }
 }

@@ -43,6 +43,17 @@ pub fn make_reduced_form_string(terms: &Vec<Term>) -> String {
 }
 
 
+pub fn evaluate_degree_of_terms(terms: &Vec<Term>) -> i64 {
+    let mut degree = 0;
+    for term in terms {
+        if !term.coefficient.is_zero() {
+            degree = degree.max(term.degree);
+        }
+    }
+    degree
+}
+
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -117,5 +128,27 @@ mod tests {
             Term { coefficient: Coefficient::NumFloat(1.2), degree: (2) },
         ];
         assert_eq!(make_reduced_form_string(&vec), "- 1.2 * X^0 - 2.2 * X^1 + 1.2 * X^2 = 0".to_string());
+    }
+
+    #[test]
+    fn evaluate_degree_of_terms_empty() {
+        let vec = Vec::new();
+        assert_eq!(evaluate_degree_of_terms(&vec), 0);
+    }
+
+    #[test]
+    fn evaluate_degree_of_terms_one() {
+        let vec = vec![Term { coefficient: Coefficient::NumInt(1), degree: (1) }];
+        assert_eq!(evaluate_degree_of_terms(&vec), 1);
+    }
+
+    #[test]
+    fn evaluate_degree_of_terms_in_zero() {
+        let vec = vec![
+            Term { coefficient: Coefficient::NumFloat(-1.2), degree: (0) },
+            Term { coefficient: Coefficient::NumFloat(2.1), degree: (1) },
+            Term { coefficient: Coefficient::NumFloat(0.0), degree: (2) },
+        ];
+        assert_eq!(evaluate_degree_of_terms(&vec), 1);
     }
 }
