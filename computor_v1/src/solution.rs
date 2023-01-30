@@ -161,6 +161,17 @@ fn degree_2_solution_two(terms: &Vec<Term>, discriminant: &Coefficient) -> Strin
 }
 
 
+fn degree_2_solution_complex(terms: &Vec<Term>, discriminant: &Coefficient) -> String {
+    let string = "Discriminant is strictly negative, the two complex solutions are:\n".to_string();
+    let b = &terms[1].coefficient.to_float();
+    let a = &terms[2].coefficient.to_float() * 2.0;
+    let discriminant_root = sqrt(-discriminant.to_float());
+    let real_num = -b / a;
+    let complex_num = discriminant_root / a;
+    string + format!("{} ± {}i", real_num, complex_num).as_str()
+}
+
+
 fn degree_2_solution(terms: &Vec<Term>) -> String {
     // ax^2 + bx + c = 0
     let terms = make_terms_no_gaps(terms, 2);
@@ -170,7 +181,7 @@ fn degree_2_solution(terms: &Vec<Term>) -> String {
     } else if discriminant.is_plus() {
         degree_2_solution_two(&terms, &discriminant)
     } else {
-        "Discriminant is strictly negative, there is no real solution.".to_string()
+        degree_2_solution_complex(&terms, &discriminant)
     }
 }
 
@@ -356,14 +367,25 @@ mod tests {
     }
 
     #[test]
-    fn degree_2_solution_zero() {
+    fn degree_2_solution_complex() {
         let terms = vec![
             Term {coefficient: Coefficient::NumInt(1), degree: 0},
             Term {coefficient: Coefficient::NumInt(0), degree: 1},
             Term {coefficient: Coefficient::NumInt(1), degree: 2},
         ];
         assert_eq!(degree_2_solution(&terms),
-            "Discriminant is strictly negative, there is no real solution.".to_string());
+            "Discriminant is strictly negative, the two complex solutions are:\n-0 ± 1i".to_string());
+    }
+
+    #[test]
+    fn degree_2_solution_complex_b() {
+        let terms = vec![
+            Term {coefficient: Coefficient::NumInt(1), degree: 0},
+            Term {coefficient: Coefficient::NumInt(4), degree: 1},
+            Term {coefficient: Coefficient::NumInt(5), degree: 2},
+        ];
+        assert_eq!(degree_2_solution(&terms),
+            "Discriminant is strictly negative, the two complex solutions are:\n-0.4 ± 0.2i".to_string());
     }
 
     #[test]
