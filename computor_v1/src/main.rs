@@ -7,6 +7,7 @@ mod reduce_equation;
 mod utility;
 mod solution;
 mod fraction;
+mod math_utility;
 
 use parse_string::parse_string;
 use elem_to_term::elem_to_term;

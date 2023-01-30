@@ -137,23 +137,6 @@ fn degree_2_solution_one(terms: &Vec<Term>) -> String {
     let temp = Coefficient::NumInt(-2);
     let a = a.mul(&temp);
     string + degree_2_solution_one_from_two_coefficient(&a, b).as_str()
-
-    // if let (Coefficient::NumInt(n1), Coefficient::NumInt(n2)) = (&a, b) {
-    //     match Fraction::safe_new(*n2, *n1) {
-    //         Some(fraction) => {
-    //             let fraction = fraction.make_irreducible_fraction();
-    //             if *n1 == 0 {
-    //                 return string + "0"
-    //             } else {
-    //                 return string + format!("{}", fraction).as_str()
-    //             }
-    //         },
-    //         None => {},
-    //     };
-    // }
-    // let a = a.to_float();
-    // let b = b.to_float();
-    // string + format!("{}", b / a).as_str()
 }
 
 

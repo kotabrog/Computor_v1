@@ -1,6 +1,7 @@
 use std::fmt;
 
-use num::integer::gcd;
+use crate::math_utility::math_utility::checked_gcd;
+
 
 #[derive(Debug, PartialEq)]
 pub struct Fraction {
@@ -23,8 +24,14 @@ impl Fraction {
                     Some(n) => n,
                     None => return None,
                 };
+                if neg_top == i64::MIN {
+                    return None
+                }
                 Some(Fraction {top: neg_top, bottom: neg_bottom})
             } else {
+                if top == i64::MIN {
+                    return None
+                }
                 Some(Fraction {top, bottom})
             }
         }
@@ -32,7 +39,10 @@ impl Fraction {
 
 
     pub fn make_irreducible_fraction(&self) -> Fraction {
-        let gcd_value = gcd(self.top, self.bottom);
+        let gcd_value = match checked_gcd(self.top, self.bottom) {
+            Some(v) => v,
+            None => 1,
+        };
         Fraction {top: self.top / gcd_value, bottom: self.bottom / gcd_value}
     }
 }
