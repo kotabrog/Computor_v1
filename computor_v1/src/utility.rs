@@ -16,21 +16,21 @@ pub fn make_reduced_form_string(terms: &Vec<Term>) -> String {
         string += match term.coefficient {
             Coefficient::NumInt(n) => {
                 if n < 0 {
-                    format!("- {} * X^{} ", n.abs(), term.degree)
+                    format!("- {} * X^{} ", -n, term.degree)
                 } else if string.is_empty() {
-                    format!("{} * X^{} ", n.abs(), term.degree)
+                    format!("{} * X^{} ", n, term.degree)
                 } else {
-                    format!("+ {} * X^{} ", n.abs(), term.degree)
+                    format!("+ {} * X^{} ", n, term.degree)
                 }
             },
             
             Coefficient::NumFloat(n) => {
                 if n < 0.0 {
-                    format!("- {} * X^{} ", n.abs(), term.degree)
+                    format!("- {} * X^{} ", -n, term.degree)
                 } else if string.is_empty() {
-                    format!("{} * X^{} ", n.abs(), term.degree)
+                    format!("{} * X^{} ", n, term.degree)
                 } else {
-                    format!("+ {} * X^{} ", n.abs(), term.degree)
+                    format!("+ {} * X^{} ", n, term.degree)
                 }
             },
         }.as_str();
@@ -51,6 +51,12 @@ pub fn evaluate_degree_of_terms(terms: &Vec<Term>) -> i64 {
         }
     }
     degree
+}
+
+
+pub fn is_int_value(v: f64) -> bool {
+    let int_v = v as i64;
+    v - int_v as f64 == 0.0
 }
 
 
@@ -150,5 +156,15 @@ mod tests {
             Term { coefficient: Coefficient::NumFloat(0.0), degree: (2) },
         ];
         assert_eq!(evaluate_degree_of_terms(&vec), 1);
+    }
+
+    #[test]
+    fn is_int_value_int() {
+        assert_eq!(is_int_value(1.0), true);
+    }
+
+    #[test]
+    fn is_int_value_float() {
+        assert_eq!(is_int_value(1.1), false);
     }
 }

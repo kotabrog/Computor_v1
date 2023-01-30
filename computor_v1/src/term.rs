@@ -18,7 +18,7 @@ pub enum Coefficient {
 }
 
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct Term {
     pub coefficient: Coefficient,
     pub degree: i64,
@@ -42,6 +42,26 @@ impl Coefficient {
             },
             (Coefficient::NumFloat(n1), Coefficient::NumFloat(n2)) => {
                 Coefficient::NumFloat(n1 + n2)
+            }
+        }
+    }
+
+    pub fn mul(&self, other: &Coefficient) -> Coefficient {
+        match (self, other) {
+            (Coefficient::NumInt(n1), Coefficient::NumInt(n2)) => {
+                match n1.checked_mul(*n2) {
+                    Some(n) => Coefficient::NumInt(n),
+                    None => Coefficient::NumFloat(*n1 as f64 * *n2 as f64),
+                }
+            },
+            (Coefficient::NumInt(n1), Coefficient::NumFloat(n2)) => {
+                Coefficient::NumFloat(*n1 as f64 * n2)
+            },
+            (Coefficient::NumFloat(n1), Coefficient::NumInt(n2)) => {
+                Coefficient::NumFloat(n1 * *n2 as f64)
+            },
+            (Coefficient::NumFloat(n1), Coefficient::NumFloat(n2)) => {
+                Coefficient::NumFloat(n1 * n2)
             }
         }
     }
@@ -71,16 +91,27 @@ impl Coefficient {
         }
     }
 
-    // pub fn is_plus(&self) -> bool {
-    //     match self {
-    //         Coefficient::NumInt(n) => {
-    //             *n >= 0
-    //         },
-    //         Coefficient::NumFloat(n) => {
-    //             *n >= 0.0
-    //         },
-    //     }
-    // }
+    pub fn to_float(&self) -> f64 {
+        match self {
+            Coefficient::NumInt(n) => {
+                *n as f64
+            },
+            Coefficient::NumFloat(n) => {
+                *n
+            },
+        }
+    }
+
+    pub fn is_plus(&self) -> bool {
+        match self {
+            Coefficient::NumInt(n) => {
+                *n >= 0
+            },
+            Coefficient::NumFloat(n) => {
+                *n >= 0.0
+            },
+        }
+    }
 }
 
 
@@ -121,6 +152,41 @@ mod tests {
         let lhs = Coefficient::NumInt(9223372036854775807);
         let rhs = Coefficient::NumInt(1);
         assert_eq!(lhs.add(&rhs), Coefficient::NumFloat(9223372036854775808_f64));
+    }
+
+    #[test]
+    fn coefficient_mul_int_int() {
+        let lhs = Coefficient::NumInt(3);
+        let rhs = Coefficient::NumInt(2);
+        assert_eq!(lhs.mul(&rhs), Coefficient::NumInt(6));
+    }
+    
+    #[test]
+    fn coefficient_mul_float_int() {
+        let lhs = Coefficient::NumFloat(3.0);
+        let rhs = Coefficient::NumInt(2);
+        assert_eq!(lhs.mul(&rhs), Coefficient::NumFloat(6.0));
+    }
+
+    #[test]
+    fn coefficient_mul_int_float() {
+        let lhs = Coefficient::NumInt(2);
+        let rhs = Coefficient::NumFloat(3.0);
+        assert_eq!(lhs.mul(&rhs), Coefficient::NumFloat(6.0));
+    }
+
+    #[test]
+    fn coefficient_mul_float_float() {
+        let lhs = Coefficient::NumFloat(2.0);
+        let rhs = Coefficient::NumFloat(3.0);
+        assert_eq!(lhs.mul(&rhs), Coefficient::NumFloat(6.0));
+    }
+
+    #[test]
+    fn coefficient_mul_error_int_int_overflow() {
+        let lhs = Coefficient::NumInt(9223372036854775807);
+        let rhs = Coefficient::NumInt(2);
+        assert_eq!(lhs.mul(&rhs), Coefficient::NumFloat(9223372036854775807_f64 * 2.0));
     }
 
     #[test]
@@ -165,27 +231,39 @@ mod tests {
         assert_eq!(value.is_zero(), false);
     }
 
-    // #[test]
-    // fn is_plus_int_plus() {
-    //     let value = Coefficient::NumInt(1);
-    //     assert_eq!(value.is_plus(), true);
-    // }
+    #[test]
+    fn to_float_int() {
+        let value = Coefficient::NumInt(1);
+        assert_eq!(value.to_float(), 1.0);
+    }
 
-    // #[test]
-    // fn is_plus_int_minus() {
-    //     let value = Coefficient::NumInt(-1);
-    //     assert_eq!(value.is_plus(), false);
-    // }
+    #[test]
+    fn to_float_float() {
+        let value = Coefficient::NumFloat(1.2);
+        assert_eq!(value.to_float(), 1.2);
+    }
 
-    // #[test]
-    // fn is_plus_float_plus() {
-    //     let value = Coefficient::NumFloat(1.0);
-    //     assert_eq!(value.is_plus(), true);
-    // }
+    #[test]
+    fn is_plus_int_plus() {
+        let value = Coefficient::NumInt(1);
+        assert_eq!(value.is_plus(), true);
+    }
 
-    // #[test]
-    // fn is_plus_float_minus() {
-    //     let value = Coefficient::NumFloat(-1.0);
-    //     assert_eq!(value.is_plus(), false);
-    // }
+    #[test]
+    fn is_plus_int_minus() {
+        let value = Coefficient::NumInt(-1);
+        assert_eq!(value.is_plus(), false);
+    }
+
+    #[test]
+    fn is_plus_float_plus() {
+        let value = Coefficient::NumFloat(1.0);
+        assert_eq!(value.is_plus(), true);
+    }
+
+    #[test]
+    fn is_plus_float_minus() {
+        let value = Coefficient::NumFloat(-1.0);
+        assert_eq!(value.is_plus(), false);
+    }
 }

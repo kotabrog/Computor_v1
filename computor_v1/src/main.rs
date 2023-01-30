@@ -5,6 +5,8 @@ mod parse_string;
 mod elem_to_term;
 mod reduce_equation;
 mod utility;
+mod solution;
+mod fraction;
 
 use parse_string::parse_string;
 use elem_to_term::elem_to_term;
@@ -14,6 +16,7 @@ use utility::{
     make_reduced_form_string,
     evaluate_degree_of_terms,
 };
+use solution::solution;
 
 
 fn main() {
@@ -63,4 +66,8 @@ fn main() {
         println!("The polynomial degree is strictly greater than 2, I can't solve.");
         return;
     }
+
+    let solved_string = solution(&terms, degree);
+
+    println!("{}", solved_string);
 }
