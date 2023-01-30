@@ -37,8 +37,6 @@ fn main() {
         }
     };
 
-    // println!("{:?}", parsed_equation);
-
     let equation_terms = match elem_to_term(parsed_equation) {
         Ok(v) => v,
         Err(s) => {
@@ -47,15 +45,9 @@ fn main() {
         }
     };
 
-    // println!("{:?}", equation_terms);
-
     let terms = reduce_equation(&equation_terms.0, &equation_terms.1);
 
-    // println!("{:?}", terms);
-
     let terms = hash_terms_to_sorted_vec(terms);
-
-    // println!("{:?}", terms);
 
     println!("Reduced form: {}", make_reduced_form_string(&terms));
 

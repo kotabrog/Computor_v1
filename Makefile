@@ -1,11 +1,11 @@
 NAME := computor
 
-debug:
-	@cd computor_v1 && cargo build
-	@cp computor_v1/target/release/computor_v1 ./$(NAME)
-
 release:
 	@cd computor_v1 && cargo build --release
+	@cp computor_v1/target/release/computor_v1 ./$(NAME)
+
+debug:
+	@cd computor_v1 && cargo build
 	@cp computor_v1/target/release/computor_v1 ./$(NAME)
 
 $(NAME): release
