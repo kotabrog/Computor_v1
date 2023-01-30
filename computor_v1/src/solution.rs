@@ -1,6 +1,7 @@
 use crate::term::{Term, Coefficient};
 use crate::fraction::Fraction;
 use crate::utility::is_int_value;
+use crate::math_utility::math_utility::sqrt;
 
 
 fn degree_0_solution_all() -> String {
@@ -146,7 +147,7 @@ fn degree_2_solution_two(terms: &Vec<Term>, discriminant: &Coefficient) -> Strin
     let a = &terms[2].coefficient;
     let temp = Coefficient::NumInt(2);
     let a = a.mul(&temp);
-    let discriminant_root = discriminant.to_float().sqrt();
+    let discriminant_root = sqrt(discriminant.to_float());
     let discriminant = if is_int_value(discriminant_root) {
         Coefficient::NumInt(discriminant_root as i64)
     } else {

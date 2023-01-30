@@ -33,6 +33,17 @@ pub mod math_utility {
         }
         Some(gcd_loop(a, b))
     }
+
+    pub fn sqrt(v: f64) -> f64 {
+        if v <= 0.0 {
+            return 0.0
+        }
+        let mut x = v;
+        for _ in 0..1000 {
+            x = (x * x + v) / (2.0 * x);
+        }
+        x
+    }
 }
 
 #[cfg(test)]
@@ -97,5 +108,30 @@ mod tests {
     #[test]
     fn checked_gcd_minus_minus() {
         assert_eq!(checked_gcd(-4, -6), Some(2));
+    }
+
+    #[test]
+    fn sqrt_zero() {
+        assert_eq!(sqrt(0.0), 0.0);
+    }
+
+    #[test]
+    fn sqrt_one() {
+        assert_eq!(sqrt(1.0), 1.0);
+    }
+
+    #[test]
+    fn sqrt_small() {
+        assert_eq!(sqrt(0.01), 0.1);
+    }
+
+    #[test]
+    fn sqrt_4() {
+        assert_eq!(sqrt(4.0), 2.0);
+    }
+
+    #[test]
+    fn sqrt_max() {
+        assert!(sqrt(f64::MAX).is_nan());
     }
 }
