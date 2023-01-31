@@ -14,8 +14,6 @@ enum TermStep {
 
 
 fn check_and_push_term(elems: &Vec<Elem>, terms: &mut Vec<Term>) -> Result<(), String> {
-    // Wip detailed syntax error
-    // Wip flexible format support
     let mut coefficient = Coefficient::NumInt(1);
     let mut degree = 0;
     let mut is_plus = true;
