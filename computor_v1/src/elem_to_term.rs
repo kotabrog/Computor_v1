@@ -109,7 +109,6 @@ pub fn elem_to_term(elems: Vec<Elem>) -> Result<(Vec<Term>, Vec<Term>), String> 
                     check_and_push_term(&elem_stock,
                         if is_left {&mut vec_left} else {&mut vec_right})?;
                     elem_stock.clear();
-                    elem_stock.push(elem);
                     is_left = false;
                 } else {
                     return Err("There were multiple equals".to_string());
